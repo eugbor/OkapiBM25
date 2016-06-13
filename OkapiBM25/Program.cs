@@ -39,22 +39,37 @@
                 okapiWords.Add(new OkapiWord() { Word = word, Rank = HelperMethods.GetRankOfWord(sentences, word) });
             }
 
-            // top 10
-            List<OkapiWord> frequencyWords = okapiWords.OrderByDescending(ow => ow.Rank).Take(10).ToList();
+            // List<OkapiWord> frequencyWords = okapiWords.OrderByDescending(ow => ow.Rank).Take(10).ToList();
 
-
-            foreach (var word in frequencyWords)
+            List<OkapiSentence> okapiSentences = new List<OkapiSentence>();
+            foreach (var sentence in sentences)
             {
-                Console.WriteLine(word.Word);
-            }
-           
-            /*
-            string searchQuery = "The";
+                // returns a string array that contains the substring of this instance,
+                //separated by elements of a specified Unicode character array
+                var wordsInSentence = sentence.Split(' ', ',', ':', ';', '.', '!', '?').Where(word => word != string.Empty).ToList();
 
-            var searchResult = (from doc in sentences
-                               where HelperMethods.BM25(sentences, doc, searchQuery) != 0
-                               orderby HelperMethods.BM25(sentences, doc, searchQuery)
-                               select doc).Take(5).ToList();*/
+                double rank = 1;
+                foreach (var word in wordsInSentence)
+                {
+                    // returns the first element of a sequence or a default value
+                    //if the sequence contains no elements
+                    var foundOkapiWord = okapiWords.FirstOrDefault(w => w.Word.ToLower() == word.ToLower());
+                    if (foundOkapiWord != null)
+                    {
+                        rank *= foundOkapiWord.Rank;
+                    }
+                }
+
+                okapiSentences.Add(new OkapiSentence() { Sentence = sentence, Rank = rank });
+            }
+
+            // sorts the elements of a sequence in descending order
+            var importantSentences = okapiSentences.OrderByDescending(sent => sent.Rank).Take(5).ToList();
+
+            foreach (var impSent in importantSentences)
+            {
+                Console.WriteLine(impSent.Sentence);
+            }
 
             Console.ReadLine();
         }

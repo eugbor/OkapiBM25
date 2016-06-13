@@ -44,6 +44,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="HelperMethods.cs" />
+    <Compile Include="OkapiSentence.cs" />
     <Compile Include="OkapiWord.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
